@@ -10,7 +10,7 @@ struct Lexer {
 
 struct Lexer *lexer_new_from_filename(const char *const filename)
 {
-    if (filename == NULL) return NULL;
+    assert(filename != NULL);
 
     struct Lexer *lexer = malloc(sizeof(struct Lexer));
     memset(lexer, 0, sizeof(struct Lexer));
