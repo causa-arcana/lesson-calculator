@@ -94,7 +94,7 @@ void token_println(const struct Token *const token)
         token->index,
         token->line,
         token->column,
-        token->value
+        token->value[0] == '\0' ? "NULL" : ((char*)token->value)
     );
 }
 
