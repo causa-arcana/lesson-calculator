@@ -10,6 +10,7 @@ struct Lexer {
     FILE *file;
     unsigned long index, line, column;
     unsigned char current;
+    struct TokenVector *token_vector;
 };
 
 struct Lexer *lexer_new_from_filename(const char *const filename)
@@ -32,6 +33,9 @@ struct Lexer *lexer_new_from_filename(const char *const filename)
     lexer->column = 1;
     lexer->current = fgetc(lexer->file);
 
+    lexer->token_vector = token_vector_new();
+    if (lexer->token_vector == NULL) goto fail2;
+
     return lexer;
 
 fail2:
@@ -47,7 +51,9 @@ void lexer_destroy(struct Lexer *const lexer)
     assert(lexer != NULL);
     assert(lexer->filename != NULL);
     assert(lexer->file != NULL);
+    assert(lexer->token_vector != NULL);
 
+    token_vector_destroy(lexer->token_vector);
     fclose(lexer->file);
     free(lexer->filename);
     free(lexer);

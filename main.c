@@ -16,7 +16,7 @@ int main(const int argc, const char *const argv[])
     struct Lexer *lexer = lexer_new_from_filename(filename);
 
     if (lexer == NULL) {
-        fprintf(stderr, "Input file doesn't exist\n");
+        fprintf(stderr, "Can't create lexer\n");
         exit(EXIT_FAILURE);
     }
 
