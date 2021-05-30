@@ -50,3 +50,10 @@ void lexer_destroy(struct Lexer *const lexer)
     free(lexer->filename);
     free(lexer);
 }
+
+const struct Token *lexer_get_token(struct Lexer *const lexer)
+{
+    assert(lexer != NULL);
+
+    return NULL;
+}

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "lexer.h"
+#include "token.h"
 
 int main(const int argc, const char *const argv[])
 {
@@ -17,6 +18,13 @@ int main(const int argc, const char *const argv[])
     if (lexer == NULL) {
         fprintf(stderr, "Input file doesn't exist\n");
         exit(EXIT_FAILURE);
+    }
+
+    const struct Token *token = lexer_get_token(lexer);
+
+    while (token != NULL) {
+        token_println(token);
+        token = lexer_get_token(lexer);
     }
 
     LEXER_DESTROY(lexer);

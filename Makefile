@@ -1,6 +1,6 @@
 CFLAGS = -Wall -Wextra
 
-OBJS = main.c.o lexer.c.o
+OBJS = main.c.o lexer.c.o token.c.o
 
 .PHONY: clean
 
