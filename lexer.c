@@ -17,14 +17,15 @@ struct Lexer *lexer_new_from_filename(const char *const filename)
     assert(filename != NULL);
 
     struct Lexer *lexer = malloc(sizeof(struct Lexer));
+    if (lexer == NULL) goto fail0;
     memset(lexer, 0, sizeof(struct Lexer));
 
     lexer->filename = malloc(strlen(filename) + 1);
-    if (lexer->filename == NULL) goto fail0;
+    if (lexer->filename == NULL) goto fail1;
     strcpy(lexer->filename, filename);
 
     lexer->file = fopen(lexer->filename, "r");
-    if (lexer->file == NULL) goto fail1;
+    if (lexer->file == NULL) goto fail2;
 
     lexer->index = 0;
     lexer->line = 1;
@@ -33,10 +34,11 @@ struct Lexer *lexer_new_from_filename(const char *const filename)
 
     return lexer;
 
-fail1:
+fail2:
     free(lexer->filename);
-fail0:
+fail1:
     free(lexer);
+fail0:
     return NULL;
 }
 
