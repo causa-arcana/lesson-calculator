@@ -89,7 +89,7 @@ const struct Token *token_vector_append(
 void token_println(const struct Token *const token)
 {
     printf(
-        "Token:%s:%lu:%lu:%lu:%s\n",
+        "%s:%lu:%lu:%lu:%s\n",
         token_type_str(token->type),
         token->index,
         token->line,
@@ -102,6 +102,7 @@ const char *token_type_str(const enum TokenType token_type)
 {
     switch (token_type) {
     case TOKEN_EOF: return "EOF";
+    case TOKEN_NUMBER: return "NUMBER";
     default: assert(false);
     }
 }
