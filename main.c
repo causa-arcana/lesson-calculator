@@ -14,12 +14,12 @@ int main(const int argc, const char *const argv[])
 
     struct Lexer *lexer = lexer_new_from_filename(filename);
 
-    if (!lexer) {
+    if (lexer == NULL) {
         fprintf(stderr, "Input file doesn't exist\n");
+        exit(EXIT_FAILURE);
     }
-    else {
-        LEXER_DESTROY(lexer);
-    }
+
+    LEXER_DESTROY(lexer);
 
     exit(EXIT_SUCCESS);
 }
