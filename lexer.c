@@ -1,11 +1,13 @@
 #include "lexer.h"
 
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 struct Lexer {
     char *filename;
+    FILE *file;
 };
 
 struct Lexer *lexer_new_from_filename(const char *const filename)
@@ -16,12 +18,17 @@ struct Lexer *lexer_new_from_filename(const char *const filename)
     memset(lexer, 0, sizeof(struct Lexer));
 
     lexer->filename = malloc(strlen(filename) + 1);
-    if (lexer->filename == NULL) goto fail_after_lexer;
+    if (lexer->filename == NULL) goto fail0;
     strcpy(lexer->filename, filename);
+
+    lexer->file = fopen(lexer->filename, "r");
+    if (lexer->file == NULL) goto fail1;
 
     return lexer;
 
-fail_after_lexer:
+fail1:
+    free(lexer->filename);
+fail0:
     free(lexer);
     return NULL;
 }
@@ -29,7 +36,10 @@ fail_after_lexer:
 void lexer_destroy(struct Lexer *const lexer)
 {
     assert(lexer != NULL);
+    assert(lexer->filename != NULL);
+    assert(lexer->file != NULL);
 
-    if (lexer->filename) free(lexer->filename);
+    fclose(lexer->file);
+    free(lexer->filename);
     free(lexer);
 }
