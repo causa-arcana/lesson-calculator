@@ -1,6 +1,7 @@
 #include "lexer.h"
 
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,10 +9,13 @@
 struct Lexer {
     char *filename;
     FILE *file;
+    bool eof;
     unsigned long index, line, column;
-    unsigned char current;
+    int current;
     struct TokenVector *token_vector;
 };
+
+static const struct Token *get_token_eof(struct Lexer *lexer);
 
 struct Lexer *lexer_new_from_filename(const char *const filename)
 {
@@ -28,6 +32,7 @@ struct Lexer *lexer_new_from_filename(const char *const filename)
     lexer->file = fopen(lexer->filename, "r");
     if (lexer->file == NULL) goto fail2;
 
+    lexer->eof = false;
     lexer->index = 0;
     lexer->line = 1;
     lexer->column = 1;
@@ -63,5 +68,26 @@ const struct Token *lexer_get_token(struct Lexer *const lexer)
 {
     assert(lexer != NULL);
 
+    switch (lexer->current) {
+    case EOF: return get_token_eof(lexer);
+    default: return get_token_eof(lexer);
+    }
+
     return NULL;
+}
+
+const struct Token *get_token_eof(struct Lexer *const lexer)
+{
+    if (lexer->eof) return NULL;
+
+    lexer->eof = true;
+
+    return token_vector_append(
+        lexer->token_vector,
+        TOKEN_EOF,
+        lexer->index,
+        lexer->line,
+        lexer->column,
+        NULL
+    );
 }
