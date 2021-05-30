@@ -6,6 +6,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define IDENT_START(c) (((c) >= 'A' && (c) <= 'Z') || ((c) >= 'a' && (c) <= 'z') || (c) == '_')
+#define IDENT_WHOLE(c) (IDENT_START((c)) || ((c) >= '0' && (c) <= '9'))
+#define NUMBER_START(c) ((c) >= '0' && (c) <= '9')
+#define NUMBER_WHOLE(c) NUMBER_START((c))
+
 struct Lexer {
     char *filename;
     FILE *file;
@@ -74,8 +79,8 @@ const struct Token *lexer_get_token(struct Lexer *const lexer)
     while (lexer->current == ' ' || lexer->current == '\n') next_char(lexer);
 
     if (lexer->current == EOF) return get_token_eof(lexer);
-    if ((lexer->current >= 'a' && lexer->current <= 'z') || (lexer->current >= 'A' && lexer->current <= 'Z') || lexer->current == '_') return get_token_ident(lexer);
-    if (lexer->current >= '0' && lexer->current <= '9') return get_token_number(lexer);
+    if (IDENT_START(lexer->current)) return get_token_ident(lexer);
+    if (NUMBER_START(lexer->current)) return get_token_number(lexer);
 
     return NULL;
 }
@@ -117,9 +122,10 @@ const struct Token *get_token_ident(struct Lexer *const lexer)
     const unsigned long column = lexer->column;
 
     char value[4096];
+    memset(value, 0, sizeof(value));
     size_t idx = 0;
 
-    while ((lexer->current >= 'a' && lexer->current <= 'z') || (lexer->current >= 'A' && lexer->current <= 'Z') || lexer->current == '_') {
+    while (IDENT_WHOLE(lexer->current)) {
         if (idx >= 4096) return NULL;
         value[idx++] = lexer->current;
         next_char(lexer);
@@ -142,9 +148,10 @@ const struct Token *get_token_number(struct Lexer *const lexer)
     const unsigned long column = lexer->column;
 
     char value[4096];
+    memset(value, 0, sizeof(value));
     size_t idx = 0;
 
-    while (lexer->current >= '0' && lexer->current <= '9') {
+    while (NUMBER_WHOLE(lexer->current)) {
         if (idx >= 4096) return NULL;
         value[idx++] = lexer->current;
         next_char(lexer);
