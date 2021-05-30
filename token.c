@@ -102,6 +102,7 @@ const char *token_type_str(const enum TokenType token_type)
 {
     switch (token_type) {
     case TOKEN_EOF: return "EOF";
+    case TOKEN_IDENT: return "IDENT";
     case TOKEN_NUMBER: return "NUMBER";
     default: assert(false);
     }
