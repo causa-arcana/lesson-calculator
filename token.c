@@ -79,7 +79,9 @@ const struct Token *token_vector_append(
     token_vector->ptr[token_vector->count].line = line;
     token_vector->ptr[token_vector->count].column = column;
     token_vector->ptr[token_vector->count].length = length;
-    strcpy((char*)token_vector->ptr[token_vector->count].value, value);
+    if (value != NULL) {
+        strcpy((char*)token_vector->ptr[token_vector->count].value, value);
+    }
 
     return &token_vector->ptr[token_vector->count++];
 }
