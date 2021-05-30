@@ -27,6 +27,8 @@ struct TokenVector *token_vector_new()
     if (token_vector->ptr == NULL) goto fail1;
     memset(token_vector->ptr, 0, 1000 * sizeof(struct Token));
 
+    return token_vector;
+
 fail1:
     free(token_vector);
 fail0:
