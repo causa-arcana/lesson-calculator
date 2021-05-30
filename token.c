@@ -42,6 +42,46 @@ void token_vector_destroy(struct TokenVector *const token_vector)
     free(token_vector);
 }
 
+const struct Token *token_vector_append(
+    struct TokenVector *token_vector,
+    enum TokenType token_type,
+    unsigned long index,
+    unsigned long line,
+    unsigned long column,
+    const char *value
+) {
+    assert(token_vector != NULL);
+    assert(token_vector->ptr != NULL);
+    assert(token_vector->capacity > 0);
+    assert(token_vector->count <= token_vector->capacity);
+
+    if (token_vector->count == token_vector->capacity) {
+        if (token_vector->capacity >= 1000000) return NULL;
+
+        const size_t capacity = token_vector->capacity + 1000;
+
+        struct Token *ptr = realloc(token_vector->ptr, capacity * sizeof(struct Token));
+        if (ptr == NULL) return NULL;
+        memset(&token_vector->ptr[token_vector->capacity], 0, 1000 * sizeof(struct Token));
+
+        token_vector->capacity = capacity;
+        token_vector->ptr = ptr;
+    }
+
+    const size_t length = value == NULL ? 0 : strlen(value);
+
+    if (length > TOKEN_VALUE_SIZE_MAX - 1) return NULL;
+
+    token_vector->ptr[token_vector->count].type = token_type;
+    token_vector->ptr[token_vector->count].index = index;
+    token_vector->ptr[token_vector->count].line = line;
+    token_vector->ptr[token_vector->count].column = column;
+    token_vector->ptr[token_vector->count].length = length;
+    strcpy((char*)token_vector->ptr[token_vector->count].value, value);
+
+    return &token_vector->ptr[token_vector->count++];
+}
+
 void token_println(const struct Token *const token)
 {
     printf(
