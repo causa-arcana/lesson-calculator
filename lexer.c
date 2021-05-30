@@ -8,6 +8,8 @@
 struct Lexer {
     char *filename;
     FILE *file;
+    unsigned long index, line, column;
+    unsigned char current;
 };
 
 struct Lexer *lexer_new_from_filename(const char *const filename)
@@ -23,6 +25,11 @@ struct Lexer *lexer_new_from_filename(const char *const filename)
 
     lexer->file = fopen(lexer->filename, "r");
     if (lexer->file == NULL) goto fail1;
+
+    lexer->index = 0;
+    lexer->line = 1;
+    lexer->column = 1;
+    lexer->current = fgetc(lexer->file);
 
     return lexer;
 
