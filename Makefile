@@ -1,6 +1,7 @@
 CFLAGS = -Wall -Wextra
 
-OBJS = main.c.o lexer.c.o token.c.o
+SRC_OBJS = main.c.o lexer.c.o token.c.o
+OBJS = $(addprefix src/, $(SRC_OBJS))
 
 .PHONY: clean
 
