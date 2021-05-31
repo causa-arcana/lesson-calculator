@@ -1,3 +1,5 @@
-/calc
-
 /src/*.o
+/tests/*.o
+
+/calc
+/tests/lexer
