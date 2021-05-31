@@ -12,6 +12,7 @@
 
 struct AstNode {
     bool used;
+    size_t ref_count;
     char type[AST_NODE_TYPE_SIZE_MAX];
     const struct Token *token;
     size_t children_count;

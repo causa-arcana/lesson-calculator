@@ -17,6 +17,7 @@ int main()
     const struct AstNode *const node0 = ast_node_create(ast, "foo", NULL, 0, NULL);
     assert(node0 != NULL);
     assert(node0->used);
+    assert(node0->ref_count == 0);
     assert(strcmp(node0->type, "foo") == 0);
     assert(node0->token == NULL);
     assert(node0->children_count == 0);
@@ -29,6 +30,7 @@ int main()
     const struct AstNode *const node1 = ast_node_create(ast, "bar", NULL, 0, NULL);
     assert(node1 != NULL);
     assert(node1->used);
+    assert(node1->ref_count == 0);
     assert(strcmp(node1->type, "bar") == 0);
     assert(node1->token == NULL);
     assert(node1->children_count == 0);

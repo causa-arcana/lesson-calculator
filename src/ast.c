@@ -23,6 +23,7 @@ struct Ast *ast_new()
 
     for (size_t index = 0; index < ast->capacity; ++index) {
         ast->nodes[index].used = false;
+        ast->nodes[index].ref_count = 0;
     }
 
     return ast;
@@ -110,6 +111,7 @@ const struct AstNode *ast_node_create(
         ast->capacity = capacity;
     }
 
+    ast->nodes[new_index].ref_count = 0;
     strcpy(ast->nodes[new_index].type, type);
     ast->nodes[new_index].token = token;
     ast->nodes[new_index].children_count = children_count;
