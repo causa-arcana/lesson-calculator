@@ -64,10 +64,10 @@ const struct Token *token_vector_append(
 
         struct Token *ptr = realloc(token_vector->ptr, capacity * sizeof(struct Token));
         if (ptr == NULL) return NULL;
-        memset(&token_vector->ptr[token_vector->capacity], 0, 1000 * sizeof(struct Token));
+        memset(&ptr[token_vector->capacity], 0, 1000 * sizeof(struct Token));
 
-        token_vector->capacity = capacity;
         token_vector->ptr = ptr;
+        token_vector->capacity = capacity;
     }
 
     const size_t length = value == NULL ? 0 : strlen(value);
