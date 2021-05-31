@@ -1,3 +1,4 @@
+/exe/*.o
 /src/*.o
 /tests/*.o
 

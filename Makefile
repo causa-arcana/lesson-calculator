@@ -3,8 +3,9 @@ CFLAGS = -Wall -Wextra
 SRCS = lexer.c token.c
 SRC_OBJS = $(addsuffix .o, $(addprefix src/, $(SRCS)))
 
-CALC_BIN = calc
-CALC_OBJS = src/main.c.o
+EXES = calc
+EXE_BINS = $(EXES)
+EXE_OBJS = $(addsuffix .c.o, $(addprefix exe/, $(EXES)))
 
 TESTS = lexer
 TEST_BINS = $(addprefix tests/, $(TESTS))
@@ -12,18 +13,18 @@ TEST_OBJS = $(addsuffix .c.o, $(TEST_BINS))
 
 .PHONY: all clean test test_lexer
 
-all: calc
+all: $(EXES)
 
 clean:
-	rm -f $(SRC_OBJS) $(CALC_BIN) $(CALC_OBJS) $(TEST_BINS) $(TEST_OBJS)
+	rm -f $(SRC_OBJS) $(EXE_BINS) $(EXE_OBJS) $(TEST_BINS) $(TEST_OBJS)
 
 test: $(addprefix test_, $(TESTS))
 
-$(CALC_BIN): src/main.c.o $(SRC_OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
-
 %.c.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
+
+calc: exe/calc.c.o $(SRC_OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
 
 tests/lexer: tests/lexer.c.o $(SRC_OBJS)
 	$(CC) $(CFLAGS) -o $@ $^

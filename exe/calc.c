@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "lexer.h"
-#include "token.h"
+#include "../src/lexer.h"
+#include "../src/token.h"
 
 int main(const int argc, const char *const argv[])
 {
