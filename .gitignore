@@ -5,3 +5,4 @@
 /calc
 /tests/lexer_from_example_foo
 /tests/lexer_from_str_foo
+/tests/lexer_two_plus_two_mul_two

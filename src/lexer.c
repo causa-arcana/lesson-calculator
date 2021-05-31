@@ -32,6 +32,8 @@ static void next_char(struct Lexer *lexer);
 static const struct Token *get_token_eof(struct Lexer *lexer);
 static const struct Token *get_token_ident(struct Lexer *lexer);
 static const struct Token *get_token_number(struct Lexer *lexer);
+static const struct Token *get_token_plus(struct Lexer *lexer);
+static const struct Token *get_token_mul(struct Lexer *lexer);
 
 struct Lexer *lexer_new_from_str(const char *const str)
 {
@@ -145,6 +147,8 @@ const struct Token *lexer_get_token(struct Lexer *const lexer)
     if (lexer->current == EOF) return get_token_eof(lexer);
     if (IDENT_START(lexer->current)) return get_token_ident(lexer);
     if (NUMBER_START(lexer->current)) return get_token_number(lexer);
+    if (lexer->current == '+') return get_token_plus(lexer);
+    if (lexer->current == '*') return get_token_mul(lexer);
 
     return NULL;
 }
@@ -242,4 +246,36 @@ const struct Token *get_token_number(struct Lexer *const lexer)
         column,
         value
     );
+}
+
+const struct Token *get_token_plus(struct Lexer *const lexer)
+{
+    const struct Token *const token = token_vector_append(
+        lexer->token_vector,
+        TOKEN_PLUS,
+        lexer->index,
+        lexer->line,
+        lexer->column,
+        NULL
+    );
+
+    next_char(lexer);
+
+    return token;
+}
+
+const struct Token *get_token_mul(struct Lexer *const lexer)
+{
+    const struct Token *const token = token_vector_append(
+        lexer->token_vector,
+        TOKEN_MUL,
+        lexer->index,
+        lexer->line,
+        lexer->column,
+        NULL
+    );
+
+    next_char(lexer);
+
+    return token;
 }

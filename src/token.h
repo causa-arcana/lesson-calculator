@@ -7,6 +7,8 @@ enum TokenType {
     TOKEN_EOF,
     TOKEN_IDENT,
     TOKEN_NUMBER,
+    TOKEN_PLUS,
+    TOKEN_MUL,
 };
 
 struct Token {
