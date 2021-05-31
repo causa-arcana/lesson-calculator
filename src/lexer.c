@@ -11,7 +11,15 @@
 #define NUMBER_START(c) ((c) >= '0' && (c) <= '9')
 #define NUMBER_WHOLE(c) NUMBER_START((c))
 
+enum LexerSource {
+    LEXER_SOURCE_STR,
+    LEXER_SOURCE_FILENAME,
+};
+
 struct Lexer {
+    enum LexerSource source;
+    char *str;
+    size_t str_index;
     char *filename;
     FILE *file;
     bool eof;
@@ -25,6 +33,45 @@ static const struct Token *get_token_eof(struct Lexer *lexer);
 static const struct Token *get_token_ident(struct Lexer *lexer);
 static const struct Token *get_token_number(struct Lexer *lexer);
 
+struct Lexer *lexer_new_from_str(const char *const str)
+{
+    assert(str != NULL);
+
+    struct Lexer *lexer = malloc(sizeof(struct Lexer));
+    if (lexer == NULL) goto fail0;
+    memset(lexer, 0, sizeof(struct Lexer));
+
+    lexer->source = LEXER_SOURCE_STR;
+    lexer->filename = NULL;
+    lexer->file = NULL;
+
+    const size_t str_size = strlen(str) + 1;
+
+    lexer->str = malloc(str_size);
+    if (lexer->str == NULL) goto fail1;
+    strcpy(lexer->str, str);
+    assert((strcmp(lexer->str, str) == 0));
+
+    lexer->eof = false;
+    lexer->index = 0;
+    lexer->line = 1;
+    lexer->column = 1;
+    lexer->current = lexer->str[0];
+    lexer->str_index = 0;
+
+    lexer->token_vector = token_vector_new();
+    if (lexer->token_vector == NULL) goto fail2;
+
+    return lexer;
+
+fail2:
+    free(lexer->str);
+fail1:
+    free(lexer);
+fail0:
+    return NULL;
+}
+
 struct Lexer *lexer_new_from_filename(const char *const filename)
 {
     assert(filename != NULL);
@@ -33,9 +80,14 @@ struct Lexer *lexer_new_from_filename(const char *const filename)
     if (lexer == NULL) goto fail0;
     memset(lexer, 0, sizeof(struct Lexer));
 
+    lexer->source = LEXER_SOURCE_FILENAME;
+    lexer->str = NULL;
+    lexer->str_index = 0;
+
     lexer->filename = malloc(strlen(filename) + 1);
     if (lexer->filename == NULL) goto fail1;
     strcpy(lexer->filename, filename);
+    assert((strcmp(lexer->filename, filename) == 0));
 
     lexer->file = fopen(lexer->filename, "r");
     if (lexer->file == NULL) goto fail2;
@@ -62,13 +114,25 @@ fail0:
 void lexer_destroy(struct Lexer *const lexer)
 {
     assert(lexer != NULL);
-    assert(lexer->filename != NULL);
-    assert(lexer->file != NULL);
     assert(lexer->token_vector != NULL);
 
+    if (lexer->source == LEXER_SOURCE_STR) {
+        assert(lexer->str != NULL);
+
+        free(lexer->str);
+    }
+    else if (lexer->source == LEXER_SOURCE_FILENAME) {
+        assert(lexer->filename != NULL);
+        assert(lexer->file != NULL);
+
+        fclose(lexer->file);
+        free(lexer->filename);
+    }
+    else {
+        assert(false);
+    }
+
     token_vector_destroy(lexer->token_vector);
-    fclose(lexer->file);
-    free(lexer->filename);
     free(lexer);
 }
 
@@ -96,7 +160,20 @@ void next_char(struct Lexer *const lexer)
     }
 
     ++lexer->index;
-    lexer->current = fgetc(lexer->file);
+
+    if (lexer->source == LEXER_SOURCE_STR) {
+        lexer->current = lexer->str[++lexer->str_index];
+
+        if (lexer->current == '\0') {
+            lexer->current = EOF;
+        }
+    }
+    else if (lexer->source == LEXER_SOURCE_FILENAME) {
+        lexer->current = fgetc(lexer->file);
+    }
+    else {
+        assert(false);
+    }
 }
 
 const struct Token *get_token_eof(struct Lexer *const lexer)

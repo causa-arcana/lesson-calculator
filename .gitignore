@@ -4,3 +4,4 @@
 
 /calc
 /tests/lexer_from_example_foo
+/tests/lexer_from_str_foo
