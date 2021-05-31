@@ -7,11 +7,11 @@ EXES = calc
 EXE_BINS = $(EXES)
 EXE_OBJS = $(addsuffix .c.o, $(addprefix exe/, $(EXES)))
 
-TESTS = lexer
+TESTS = lexer_from_example_foo
 TEST_BINS = $(addprefix tests/, $(TESTS))
 TEST_OBJS = $(addsuffix .c.o, $(TEST_BINS))
 
-.PHONY: all clean test test_lexer
+.PHONY: all clean test test_lexer_from_example_foo
 
 all: $(EXES)
 
@@ -26,8 +26,8 @@ test: $(addprefix test_, $(TESTS))
 calc: exe/calc.c.o $(SRC_OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
-tests/lexer: tests/lexer.c.o $(SRC_OBJS)
+tests/lexer_from_example_foo: tests/lexer_from_example_foo.c.o $(SRC_OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
-test_lexer: tests/lexer
+test_lexer_from_example_foo: tests/lexer_from_example_foo
 	$^

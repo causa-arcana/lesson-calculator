@@ -3,4 +3,4 @@
 /tests/*.o
 
 /calc
-/tests/lexer
+/tests/lexer_from_example_foo
