@@ -89,7 +89,7 @@ void next_char(struct Lexer *const lexer)
 {
     if (lexer->current == '\n') {
         ++lexer->line;
-        lexer->column = 0;
+        lexer->column = 1;
     }
     else {
         ++lexer->column;
