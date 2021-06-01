@@ -7,11 +7,11 @@ EXES = calc
 EXE_BINS = $(EXES)
 EXE_OBJS = $(addsuffix .c.o, $(addprefix exe/, $(EXES)))
 
-TESTS = ast lexer_from_example_foo lexer_from_str_foo lexer_two_plus_two_mul_two
+TESTS = ast lexer_from_example_foo lexer_from_str_foo lexer_two_plus_two_mul_two object
 TEST_BINS = $(addprefix tests/, $(TESTS))
 TEST_OBJS = $(addsuffix .c.o, $(TEST_BINS))
 
-.PHONY: all clean test test_ast test_lexer_from_example_foo test_lexer_from_str_foo test_lexer_two_plus_two_mul_two
+.PHONY: all clean test test_ast test_lexer_from_example_foo test_lexer_from_str_foo test_lexer_two_plus_two_mul_two test_object
 
 all: $(EXES)
 
@@ -38,6 +38,9 @@ tests/lexer_from_str_foo: tests/lexer_from_str_foo.c.o $(SRC_OBJS)
 tests/lexer_two_plus_two_mul_two: tests/lexer_two_plus_two_mul_two.c.o $(SRC_OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
+tests/object: tests/object.c.o $(SRC_OBJ)
+	$(CC) $(CFLAGS) -o $@ $^
+
 test_ast: tests/ast
 	$^
 
@@ -48,4 +51,7 @@ test_lexer_from_str_foo: tests/lexer_from_str_foo
 	$^
 
 test_lexer_two_plus_two_mul_two: tests/lexer_two_plus_two_mul_two
+	$^
+
+test_object: tests/object
 	$^
