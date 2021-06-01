@@ -70,7 +70,7 @@ int main()
     assert(ast_node_get(ast, 0)->ref_count == 1);
     assert(ast_node_get(ast, 1)->ref_count == 1);
 
-    const struct AstNode *const node3 = ast_node_create(ast, "cdr", NULL, 0, NULL);
+    const struct AstNode *node3 = ast_node_create(ast, "cdr", NULL, 0, NULL);
     assert(node3 != NULL);
     assert(node3->used);
     assert(node3->ref_count == 0);
@@ -110,6 +110,73 @@ int main()
     assert(ast_node_get(ast, 1)->ref_count == 1);
     assert(ast_node_get(ast, 2)->ref_count == 1);
     assert(ast_node_get(ast, 3)->ref_count == 1);
+
+    assert(!ast_node_destroy(ast, node0));
+    assert(!ast_node_destroy(ast, node1));
+    assert(!ast_node_destroy(ast, node2));
+    assert(!ast_node_destroy(ast, node3));
+
+    assert(ast_node_destroy(ast, node4));
+    assert(ast_nodes_count(ast) == 4);
+    assert(ast_node_get(ast, 0) == node0);
+    assert(ast_node_get(ast, 1) == node1);
+    assert(ast_node_get(ast, 2) == node2);
+    assert(ast_node_get(ast, 3) == node3);
+    assert(ast_node_get(ast, 4) == NULL);
+    assert(ast_node_get(ast, 5) == NULL);
+    assert(ast_node_get(ast, 0)->ref_count == 1);
+    assert(ast_node_get(ast, 1)->ref_count == 1);
+    assert(ast_node_get(ast, 2)->ref_count == 0);
+    assert(ast_node_get(ast, 3)->ref_count == 0);
+
+    assert(!ast_node_destroy(ast, ast_node_get(ast, 0)));
+    assert(!ast_node_destroy(ast, ast_node_get(ast, 1)));
+
+    AST_NODE_DESTROY(ast, node3);
+    assert(node3 == NULL);
+    assert(ast_nodes_count(ast) == 3);
+    assert(ast_node_get(ast, 0) == node0);
+    assert(ast_node_get(ast, 1) == node1);
+    assert(ast_node_get(ast, 2) == node2);
+    assert(ast_node_get(ast, 3) == NULL);
+    assert(ast_node_get(ast, 4) == NULL);
+    assert(ast_node_get(ast, 5) == NULL);
+    assert(ast_node_get(ast, 0)->ref_count == 1);
+    assert(ast_node_get(ast, 1)->ref_count == 1);
+    assert(ast_node_get(ast, 2)->ref_count == 0);
+
+    assert(!ast_node_destroy(ast, ast_node_get(ast, 0)));
+    assert(!ast_node_destroy(ast, ast_node_get(ast, 1)));
+
+    assert(ast_node_destroy(ast, node2));
+    assert(ast_nodes_count(ast) == 2);
+    assert(ast_node_get(ast, 0) == node0);
+    assert(ast_node_get(ast, 1) == node1);
+    assert(ast_node_get(ast, 2) == NULL);
+    assert(ast_node_get(ast, 3) == NULL);
+    assert(ast_node_get(ast, 4) == NULL);
+    assert(ast_node_get(ast, 5) == NULL);
+    assert(ast_node_get(ast, 0)->ref_count == 0);
+    assert(ast_node_get(ast, 1)->ref_count == 0);
+
+    assert(ast_node_destroy(ast, node0));
+    assert(ast_nodes_count(ast) == 1);
+    assert(ast_node_get(ast, 0) == NULL);
+    assert(ast_node_get(ast, 1) == node1);
+    assert(ast_node_get(ast, 2) == NULL);
+    assert(ast_node_get(ast, 3) == NULL);
+    assert(ast_node_get(ast, 4) == NULL);
+    assert(ast_node_get(ast, 5) == NULL);
+    assert(ast_node_get(ast, 1)->ref_count == 0);
+
+    assert(ast_node_destroy(ast, node1));
+    assert(ast_nodes_count(ast) == 0);
+    assert(ast_node_get(ast, 0) == NULL);
+    assert(ast_node_get(ast, 1) == NULL);
+    assert(ast_node_get(ast, 2) == NULL);
+    assert(ast_node_get(ast, 3) == NULL);
+    assert(ast_node_get(ast, 4) == NULL);
+    assert(ast_node_get(ast, 5) == NULL);
 
     AST_DESTROY(ast);
     assert(ast == NULL);

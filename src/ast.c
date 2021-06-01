@@ -140,3 +140,40 @@ const struct AstNode *ast_node_create(
 
     return &ast->nodes[new_index];
 }
+
+bool ast_node_destroy(struct Ast *const ast, const struct AstNode *const node)
+{
+    assert(ast != NULL);
+    assert(ast->capacity > 0);
+    assert(ast->nodes != NULL);
+    assert(node != NULL);
+    assert(((void*)node) >= ((void*)ast->nodes));
+    assert(((void*)node) < (((void*)ast->nodes) + ast->capacity * sizeof(struct AstNode)));
+
+    const size_t node_index = (((void*)node) - ((void*)ast->nodes)) / sizeof(struct AstNode);
+    struct AstNode *const actual_node = &ast->nodes[node_index];
+    assert(actual_node == node);
+
+    if (!actual_node->used) return false;
+    if (actual_node->ref_count > 0) return false;
+
+    actual_node->used = false;
+
+    for (
+        size_t child_index = 0;
+        child_index < actual_node->children_count;
+        ++child_index
+    ) {
+        const size_t child_node_index = actual_node->children[child_index];
+        struct AstNode *const child_node = &ast->nodes[child_node_index];
+        assert(child_node->used);
+        assert(child_node->ref_count > 0);
+        --child_node->ref_count;
+    }
+
+    memset(actual_node, 0, sizeof(struct AstNode));
+    actual_node->used = false;
+    actual_node->ref_count = 0;
+
+    return true;
+}

@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 #define AST_DESTROY(ast) { ast_destroy(ast); ast = NULL; }
+#define AST_NODE_DESTROY(ast, node) { if (ast_node_destroy(ast, node)) node = NULL; }
 #define AST_NODE_TYPE_SIZE_MAX 128
 #define AST_NODE_CHILDREN_COUNT_MAX 1024
 
@@ -32,5 +33,6 @@ const struct AstNode *ast_node_create(
     size_t children_count,
     const size_t children[]
 );
+bool ast_node_destroy(struct Ast *ast, const struct AstNode *node);
 
 #endif // AST_INCLUDED
