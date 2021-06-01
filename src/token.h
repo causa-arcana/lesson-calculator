@@ -1,6 +1,7 @@
 #ifndef TOKEN_INCLUDED
 #define TOKEN_INCLUDED
 
+#define TOKEN_VECTOR_DESTROY(token_vector) { token_vector_destroy(token_vector); token_vector = NULL; }
 #define TOKEN_VALUE_SIZE_MAX 1024
 
 enum TokenType {

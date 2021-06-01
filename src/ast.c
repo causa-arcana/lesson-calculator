@@ -84,6 +84,7 @@ const struct AstNode *ast_node_create(
     assert(ast->nodes != NULL);
     assert(type != NULL);
     assert(type[0] != '\0');
+    assert(token != NULL);
     assert(children_count <= AST_NODE_CHILDREN_COUNT_MAX);
     if (children_count > 0) assert(children != NULL);
 
@@ -200,7 +201,8 @@ void ast_node_println(
         printf("  ");
     }
 
-    printf("%s\n", actual_node->type);
+    printf("%s ", actual_node->type);
+    token_println(actual_node->token);
 
     for (
         size_t child_index = 0;

@@ -104,6 +104,8 @@ const char *token_type_str(const enum TokenType token_type)
     case TOKEN_EOF: return "EOF";
     case TOKEN_IDENT: return "IDENT";
     case TOKEN_NUMBER: return "NUMBER";
+    case TOKEN_PLUS: return "PLUS";
+    case TOKEN_MUL: return "MUL";
     default: assert(false);
     }
 }
