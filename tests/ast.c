@@ -111,6 +111,8 @@ int main()
     assert(ast_node_get(ast, 2)->ref_count == 1);
     assert(ast_node_get(ast, 3)->ref_count == 1);
 
+    ast_node_println(ast, node4, 0);
+
     assert(!ast_node_destroy(ast, node0));
     assert(!ast_node_destroy(ast, node1));
     assert(!ast_node_destroy(ast, node2));

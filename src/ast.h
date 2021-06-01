@@ -34,5 +34,6 @@ const struct AstNode *ast_node_create(
     const size_t children[]
 );
 bool ast_node_destroy(struct Ast *ast, const struct AstNode *node);
+void ast_node_println(struct Ast *ast, const struct AstNode *node, unsigned indentation);
 
 #endif // AST_INCLUDED

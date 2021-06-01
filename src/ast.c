@@ -1,6 +1,7 @@
 #include "ast.h"
 
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -176,4 +177,41 @@ bool ast_node_destroy(struct Ast *const ast, const struct AstNode *const node)
     actual_node->ref_count = 0;
 
     return true;
+}
+
+void ast_node_println(
+    struct Ast *const ast,
+    const struct AstNode *const node,
+    const unsigned indentation
+) {
+    assert(ast != NULL);
+    assert(ast->capacity > 0);
+    assert(ast->nodes != NULL);
+    assert(node != NULL);
+    assert(((void*)node) >= ((void*)ast->nodes));
+    assert(((void*)node) < (((void*)ast->nodes) + ast->capacity * sizeof(struct AstNode)));
+
+    const size_t node_index = (((void*)node) - ((void*)ast->nodes)) / sizeof(struct AstNode);
+    struct AstNode *const actual_node = &ast->nodes[node_index];
+    assert(actual_node == node);
+    assert(actual_node->used);
+
+    for (unsigned index = 0; index < indentation; ++index) {
+        printf("  ");
+    }
+
+    printf("%s\n", actual_node->type);
+
+    for (
+        size_t child_index = 0;
+        child_index < actual_node->children_count;
+        ++child_index
+    ) {
+        const size_t child_node_index = actual_node->children[child_index];
+        struct AstNode *const child_node = &ast->nodes[child_node_index];
+        assert(child_node->used);
+        assert(child_node->ref_count > 0);
+
+        ast_node_println(ast, child_node, indentation + 1);
+    }
 }
