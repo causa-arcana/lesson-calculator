@@ -13,6 +13,9 @@ int main()
     assert(ast_node_get(ast, 0) == NULL);
     assert(ast_node_get(ast, 1) == NULL);
     assert(ast_node_get(ast, 2) == NULL);
+    assert(ast_node_get(ast, 3) == NULL);
+    assert(ast_node_get(ast, 4) == NULL);
+    assert(ast_node_get(ast, 5) == NULL);
 
     const struct AstNode *const node0 = ast_node_create(ast, "foo", NULL, 0, NULL);
     assert(node0 != NULL);
@@ -26,6 +29,9 @@ int main()
     assert(ast_node_get(ast, 0) == node0);
     assert(ast_node_get(ast, 1) == NULL);
     assert(ast_node_get(ast, 2) == NULL);
+    assert(ast_node_get(ast, 3) == NULL);
+    assert(ast_node_get(ast, 4) == NULL);
+    assert(ast_node_get(ast, 5) == NULL);
 
     const struct AstNode *const node1 = ast_node_create(ast, "bar", NULL, 0, NULL);
     assert(node1 != NULL);
@@ -39,6 +45,9 @@ int main()
     assert(ast_node_get(ast, 0) == node0);
     assert(ast_node_get(ast, 1) == node1);
     assert(ast_node_get(ast, 2) == NULL);
+    assert(ast_node_get(ast, 3) == NULL);
+    assert(ast_node_get(ast, 4) == NULL);
+    assert(ast_node_get(ast, 5) == NULL);
 
     const size_t node2_children[2] = { 0, 1 };
     const struct AstNode *const node2 = ast_node_create(ast, "car", NULL, 2, node2_children);
@@ -55,8 +64,52 @@ int main()
     assert(ast_node_get(ast, 0) == node0);
     assert(ast_node_get(ast, 1) == node1);
     assert(ast_node_get(ast, 2) == node2);
+    assert(ast_node_get(ast, 3) == NULL);
+    assert(ast_node_get(ast, 4) == NULL);
+    assert(ast_node_get(ast, 5) == NULL);
     assert(ast_node_get(ast, 0)->ref_count == 1);
     assert(ast_node_get(ast, 1)->ref_count == 1);
+
+    const struct AstNode *const node3 = ast_node_create(ast, "cdr", NULL, 0, NULL);
+    assert(node3 != NULL);
+    assert(node3->used);
+    assert(node3->ref_count == 0);
+    assert(strcmp(node3->type, "cdr") == 0);
+    assert(node3->token == NULL);
+    assert(node3->children_count == 0);
+
+    assert(ast_nodes_count(ast) == 4);
+    assert(ast_node_get(ast, 0) == node0);
+    assert(ast_node_get(ast, 1) == node1);
+    assert(ast_node_get(ast, 2) == node2);
+    assert(ast_node_get(ast, 3) == node3);
+    assert(ast_node_get(ast, 4) == NULL);
+    assert(ast_node_get(ast, 5) == NULL);
+    assert(ast_node_get(ast, 0)->ref_count == 1);
+    assert(ast_node_get(ast, 1)->ref_count == 1);
+
+    const size_t node5_children[2] = { 2, 3 };
+    const struct AstNode *const node4 = ast_node_create(ast, "baz", NULL, 2, node5_children);
+    assert(node4 != NULL);
+    assert(node4->used);
+    assert(node4->ref_count == 0);
+    assert(strcmp(node4->type, "baz") == 0);
+    assert(node4->token == NULL);
+    assert(node4->children_count == 2);
+    assert(node4->children[0] == 2);
+    assert(node4->children[1] == 3);
+
+    assert(ast_nodes_count(ast) == 5);
+    assert(ast_node_get(ast, 0) == node0);
+    assert(ast_node_get(ast, 1) == node1);
+    assert(ast_node_get(ast, 2) == node2);
+    assert(ast_node_get(ast, 3) == node3);
+    assert(ast_node_get(ast, 4) == node4);
+    assert(ast_node_get(ast, 5) == NULL);
+    assert(ast_node_get(ast, 0)->ref_count == 1);
+    assert(ast_node_get(ast, 1)->ref_count == 1);
+    assert(ast_node_get(ast, 2)->ref_count == 1);
+    assert(ast_node_get(ast, 3)->ref_count == 1);
 
     AST_DESTROY(ast);
     assert(ast == NULL);
