@@ -116,8 +116,24 @@ const struct AstNode *ast_node_create(
     ast->nodes[new_index].token = token;
     ast->nodes[new_index].children_count = children_count;
 
-    for (size_t index = 0; index < children_count; ++index) {
-        ast->nodes[new_index].children[index] = children[index];
+    for (size_t child_index = 0; child_index < children_count; ++child_index) {
+        const size_t node_index = children[child_index];
+
+        assert(node_index < ast->capacity);
+        assert(ast->nodes[node_index].used);
+
+        ast->nodes[new_index].children[child_index] = node_index;
+
+        struct AstNode *const node = &ast->nodes[node_index];
+
+        if (!node->used) {
+            memset(&ast->nodes[new_index], 0, sizeof(struct AstNode));
+            ast->nodes[new_index].used = false;
+            ast->nodes[new_index].ref_count = 0;
+            return NULL;
+        }
+
+        ++node->ref_count;
     }
 
     ast->nodes[new_index].used = true;

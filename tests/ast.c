@@ -40,6 +40,24 @@ int main()
     assert(ast_node_get(ast, 1) == node1);
     assert(ast_node_get(ast, 2) == NULL);
 
+    const size_t node2_children[2] = { 0, 1 };
+    const struct AstNode *const node2 = ast_node_create(ast, "car", NULL, 2, node2_children);
+    assert(node2 != NULL);
+    assert(node2->used);
+    assert(node2->ref_count == 0);
+    assert(strcmp(node2->type, "car") == 0);
+    assert(node2->token == NULL);
+    assert(node2->children_count == 2);
+    assert(node2->children[0] == 0);
+    assert(node2->children[1] == 1);
+
+    assert(ast_nodes_count(ast) == 3);
+    assert(ast_node_get(ast, 0) == node0);
+    assert(ast_node_get(ast, 1) == node1);
+    assert(ast_node_get(ast, 2) == node2);
+    assert(ast_node_get(ast, 0)->ref_count == 1);
+    assert(ast_node_get(ast, 1)->ref_count == 1);
+
     AST_DESTROY(ast);
     assert(ast == NULL);
 
