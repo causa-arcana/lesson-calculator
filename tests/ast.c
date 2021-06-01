@@ -214,11 +214,11 @@ int main()
     assert(ast_node_get(ast, 4) == NULL);
     assert(ast_node_get(ast, 5) == NULL);
 
-    TOKEN_VECTOR_DESTROY(token_vector);
-    assert(token_vector == NULL);
-
     AST_DESTROY(ast);
     assert(ast == NULL);
+
+    TOKEN_VECTOR_DESTROY(token_vector);
+    assert(token_vector == NULL);
 
     exit(EXIT_SUCCESS);
 }
